@@ -12,8 +12,11 @@ int main()
     int size = sizeof(arr) / sizeof(arr[0]);
 
     HuffmanCodes(arr, freq, size);*/
-    Lz77Comp* lz77 = new Lz77Comp("example.txt");
+    Lz77Comp* lz77 = new Lz77Comp("2554-0.txt");
     lz77->Compression();
+    lz77->WriteCompressedTextToFile("huffmandecoded_test.bin");
+    lz77->Decompressor();
+    lz77->WriteUncompressedTextToFile("decompressed_example.txt");
     //lz77->WriteCompressedTextToFile(file_name_02);
 
     /*string str = "stellek balint egy sexy";
