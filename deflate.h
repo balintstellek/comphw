@@ -29,6 +29,7 @@ public:
     void WriteCompressedTextToFile(std::string output_filename);
     void WriteUncompressedTextToFile();
     void WriteUncompressedTextToFile(std::string uncompressed_filename);
+    void SetUpTableFromFile(std::string table_filename);
     void Compression();
     void Decompressor();
 };
@@ -99,6 +100,26 @@ void Deflate::WriteUncompressedTextToFile(std::string uncompressed_filename) {
         output_file << uncompressed_text_;
         output_file.close();
     }
+
+}
+
+void Deflate::SetUpTableFromFile(std::string table_filename) {
+    std::ifstream ifs(table_filename);
+
+    std::string input;
+    input.assign( (std::istreambuf_iterator<char>(ifs) ),
+                  (std::istreambuf_iterator<char>()    ) );
+
+    input = input.substr(0, input.size()-1);
+    text_ = input;
+    Compression();
+    std::string table_string = compressed_text_;
+
+    text_ = "";
+    compressed_text_ = "";
+    calcFreq(table_string, input.length());
+    HuffmanCodes(table_string.length());
+
 
 }
 
