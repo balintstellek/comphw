@@ -9,10 +9,9 @@
 #include <iostream>
 #include <vector>
 #include "misc.h"
-#include "huffman_decoder.h"
 #endif //DEFLATE_LZ77_H
 
-class Deflate {
+class Lz77Comp {
 private:
 //public:
     std:: string text_;
@@ -20,8 +19,8 @@ private:
     std:: string uncompressed_text_;
 
 public:
-    Deflate(std::string input_file_name);
-    Deflate();
+    Lz77Comp(std::string input_file_name);
+    Lz77Comp();
     std::string GetText();
     void ReadFile(std::string input_file_name);
     void ReadCompressedFile(std::string input_file_name);
@@ -33,20 +32,20 @@ public:
     void Decompressor();
 };
 
-Deflate::Deflate(){
+Lz77Comp::Lz77Comp(){
     text_="";
 };
 
-Deflate::Deflate(std::string input_file_name) {
+Lz77Comp::Lz77Comp(std::string input_file_name) {
 
     ReadFile(input_file_name);
 }
 
-std::string Deflate::GetText() {
+std::string Lz77Comp::GetText() {
     return text_;
 }
 
-void Deflate::ReadFile(std::string input_file_name) {
+void Lz77Comp::ReadFile(std::string input_file_name) {
 
     std::ifstream ifs(input_file_name);
 
@@ -58,7 +57,7 @@ void Deflate::ReadFile(std::string input_file_name) {
 
 }
 
-void Deflate::ReadCompressedFile(std::string input_file_name) {
+void Lz77Comp::ReadCompressedFile(std::string input_file_name) {
 
     std::ifstream ifs(input_file_name, std::ios::binary);
 
@@ -69,7 +68,7 @@ void Deflate::ReadCompressedFile(std::string input_file_name) {
     compressed_text_ = input.substr(0, input.size()-1);
 }
 
-void Deflate::WriteTextToFile() {
+void Lz77Comp::WriteTextToFile() {
     std::ofstream output_file ("example.txt");
 
     if (output_file.is_open())
@@ -80,7 +79,7 @@ void Deflate::WriteTextToFile() {
 
 }
 
-void Deflate::WriteCompressedTextToFile(std::string output_filename) {
+void Lz77Comp::WriteCompressedTextToFile(std::string output_filename) {
     std::ofstream output_file (output_filename, std::ios::binary);
 
     if (output_file.is_open())
@@ -91,7 +90,7 @@ void Deflate::WriteCompressedTextToFile(std::string output_filename) {
 
 }
 
-void Deflate::WriteUncompressedTextToFile(std::string uncompressed_filename) {
+void Lz77Comp::WriteUncompressedTextToFile(std::string uncompressed_filename) {
     std::ofstream output_file (uncompressed_filename);
 
     if (output_file.is_open())
@@ -102,7 +101,7 @@ void Deflate::WriteUncompressedTextToFile(std::string uncompressed_filename) {
 
 }
 
-void Deflate::Compression() {
+void Lz77Comp::Compression() {
 
     std::string compressed = "";
     int window_size = 4095;
@@ -125,7 +124,7 @@ void Deflate::Compression() {
             compressed += (char)0;
             //proba
             std::bitset<8> input_bit_c((char)0);
-            bin += '0';
+            bin += input_bit_c.to_string();
 
             //uj
             //if (code_table.find(full_text[i]) != code_table.end()) {
@@ -139,7 +138,7 @@ void Deflate::Compression() {
 
             // Proba
             std::bitset<8> input_bit(full_text[i]);
-            bin += full_text[i];
+            bin += input_bit.to_string();
             //std::cout << bin << std::endl;
             //
 
@@ -155,11 +154,9 @@ void Deflate::Compression() {
             std::bitset<8> input_bit02(concat.to_string().substr(8,8));
 
             compressed += (char)input_bit01.to_ulong();
-            //bin +=input_bit01.to_string();
-            bin +=match.first;
+            bin +=input_bit01.to_string();
             compressed += (char)input_bit02.to_ulong();
-            //bin +=input_bit02.to_string();
-            bin +=match.second;
+            bin +=input_bit02.to_string();
 
             //std::cout << length;
 
@@ -168,90 +165,20 @@ void Deflate::Compression() {
     }
 
     compressed_text_ = compressed;
-    //std::cout << "Lz comp ; " << std::endl << compressed << std::endl;
-    //std::cout << "Lz comp size; " << std::endl << compressed.size() << std::endl;
+
     //std::cout << "Lz bin ; " << std::endl << bin << std::endl;
-    //WriteCompressedTextToFile("lz_test.bin");
-    //
-    std::string str = compressed;
-    std::string encodedString, decodedString;
-    calcFreq(str, str.length());
-    HuffmanCodes(str.length());
-    //std::cout << "Character With there Frequencies:\n";
-    //for (auto v=codes.begin(); v!=codes.end(); v++)
-        //std::cout << v->first <<' ' << v->second << std::endl;
-    string sxx = "";
-    for (auto i: str) {
-        sxx.push_back(i);
-
-        encodedString += codes[sxx];
-        sxx = "";
-    }
-
-
-    //std::cout << "\nEncoded Huffman data:\n" << encodedString << std::endl;
-    //std::cout << "\nSize of coded Huffman Data:\n" << encodedString.size() << std::endl;
-
-    decodedString = decode_file(minHeap.top(), encodedString);
-    //std::cout << "\nDecoded Huffman Data:\n" << decodedString << std::endl;
-    //std::cout << "\nSize of Decoded Huffman Data:\n" << decodedString.size() << std::endl;
-    std::string compressed_huff = "";
-    for(int i = 0; i < encodedString.size(); i= i +8) {
-        std::bitset<8> input_bit(encodedString.substr(i, 8));
-        compressed_huff += (char)input_bit.to_ulong();
-    }
-    compressed_text_ = compressed_huff;
-
-    // eddig van a tomorites
-    //WriteCompressedTextToFile("huffmandecoded_test.bin");
-    // itt a kiiratas
-
-    //std::cout << "\nCompressed Decoded Huffman Data:\n" << compressed_huff << std::endl;
-
-    //std::cout << "\ncomp Huffman Data:\n" << compressed_huff << std::endl;
-    //std::cout << "\ncomp size Huffman Data:\n" << compressed_huff.size() << std::endl;
-
-    /*std::string uncompressed_huff = "";
-
-    for(int i = 0; i < compressed_huff.size(); i= i +1) {
-        std::bitset<8> input_bit(compressed_huff[i]);
-        uncompressed_huff += input_bit.to_string();
-    }
-    std::cout << "\nDecompressed Encoded Huffman Data:\n" << uncompressed_huff << std::endl;
-    decodedString = decode_file(minHeap.top(), uncompressed_huff);
-    std::cout << "\nDecoded Huffman Data:\n" << decodedString << std::endl;
-    std::cout << "\nDecoded Huffman Data size" << decodedString.size() << std::endl;
-
-    std::bitset<16> input_bit("01010111111110111111111000101011100");
-    std::cout << "\nDSeparator:" << (char)input_bit.to_ulong() << std::endl;
-
-    compressed_text_ = decodedString;
-    Decompressor();
-
-    cout << "\nUncompressed deflate:\n" << uncompressed_text_ << endl;*/
 
 }
 
-void Deflate::Decompressor() {
+void Lz77Comp::Decompressor() {
 
     std::string compressed = compressed_text_;
     std::string uncompressed = "";
-    std::string uncompressed_huff = "";
-    std::string decoded = "";
     int window_size = 4095;
-
-    for(int i = 0; i < compressed.size(); i= i +1) {
-        std::bitset<8> input_bit(compressed[i]);
-        uncompressed_huff += input_bit.to_string();
-    }
-    decoded = decode_file(minHeap.top(), uncompressed_huff);
-
-    compressed = decoded;
-    //std::cout << decoded << std::endl;
-
 
     for(int i = 0; i < compressed.size(); i += 2)
     {
+
         std::bitset<8> input_bit01(compressed[i]);
         std::bitset<8> input_bit02(compressed[i+1]);
         std::bitset<16> concat(input_bit01.to_string() + input_bit02.to_string());
@@ -263,21 +190,16 @@ void Deflate::Decompressor() {
         {
             std::bitset<8> character_bit(concat.to_string().substr(8, 8));
             uncompressed += (char)character_bit.to_ulong();
-            //std::cout << "FUCK ME!!!!" << std::endl;
-            //std::cout << uncompressed << std::endl;
         }
         else
         {
             std::bitset<12> pos(concat.to_string().substr(4, 12));
-            //std::cout << "FUCK ME!!!!" << std::endl;
+
             uncompressed += uncompressed.substr(std::max(0, (int) uncompressed.size() - window_size) +
                                                 pos.to_ulong(), length);
-            //std::cout << "FUCK ME!!!!" << std::endl;
-            //std::cout << i << std::endl;
         }
     }
 
     uncompressed_text_ = uncompressed;
-    //std::cout << uncompressed << std::endl;
 
 }

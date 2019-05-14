@@ -2,22 +2,34 @@
 //#include "huffman_coder.h"
 //#include "huffman_decoder.h"
 #include "deflate.h"
+#include "lz77.h"
 
-int main()
-{
+int main(int argc, char* argv[]) {
 
-   /* char arr[] = { 'a', 'b', 'c', 'd', 'e', 'f' };
-    int freq[] = { 5, 9, 12, 13, 16, 45 };
+    std::string algorithm = argv[1];
+    std::string direction = argv[2];
+    std::string file_name_01 = argv[3];
+    std::string file_name_02 = argv[4];
 
-    int size = sizeof(arr) / sizeof(arr[0]);
-
-    HuffmanCodes(arr, freq, size);*/
-    Lz77Comp* lz77 = new Lz77Comp("2554-0.txt");
-    lz77->Compression();
-    lz77->WriteCompressedTextToFile("huffmandecoded_test.bin");
-    lz77->Decompressor();
-    lz77->WriteUncompressedTextToFile("decompressed_example.txt");
-    //lz77->WriteCompressedTextToFile(file_name_02);
+    if(algorithm == "-lz" && direction == "-c")  {
+        Lz77Comp* lz77 = new Lz77Comp(file_name_01);
+        lz77->Compression();
+        lz77->WriteCompressedTextToFile(file_name_02);
+    }
+    else if (algorithm == "-lz" && direction == "-d") {
+        Lz77Comp* lz77 = new Lz77Comp();
+        lz77->ReadCompressedFile(file_name_01);
+        lz77->Decompressor();
+        lz77->WriteUncompressedTextToFile(file_name_02);
+    }
+    else if (algorithm == "-def" && direction == "-c") {
+        Deflate *deflate = new Deflate(file_name_01);
+        deflate->Compression();
+        deflate->WriteCompressedTextToFile(file_name_02);
+        deflate->Decompressor();
+        deflate->WriteUncompressedTextToFile("decompressed-deflate-" + file_name_01);
+        //lz77->WriteCompressedTextToFile(file_name_02);
+    }
 
     /*string str = "stellek balint egy sexy";
     string encodedString, decodedString;
