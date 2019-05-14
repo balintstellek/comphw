@@ -180,25 +180,32 @@ void Lz77Comp::Compression() {
     std::cout << "Character With there Frequencies:\n";
     for (auto v=codes.begin(); v!=codes.end(); v++)
         std::cout << v->first <<' ' << v->second << std::endl;
+    string sxx = "";
+    for (auto i: str) {
+        sxx.push_back(i);
 
-    for (auto i: str)
-        encodedString+=codes[i];
+        encodedString += codes[sxx];
+        sxx = "";
+    }
 
 
     std::cout << "\nEncoded Huffman data:\n" << encodedString << std::endl;
     std::cout << "\nSize of coded Huffman Data:\n" << encodedString.size() << std::endl;
 
     decodedString = decode_file(minHeap.top(), encodedString);
-    std::cout << "\nDecoded Huffman Data:\n" << decodedString << std::endl;
-    std::cout << "\nSize of Decoded Huffman Data:\n" << decodedString.size() << std::endl;
+    //std::cout << "\nDecoded Huffman Data:\n" << decodedString << std::endl;
+    //std::cout << "\nSize of Decoded Huffman Data:\n" << decodedString.size() << std::endl;
     std::string compressed_huff = "";
     for(int i = 0; i < encodedString.size(); i= i +8) {
         std::bitset<8> input_bit(encodedString.substr(i, 8));
         compressed_huff += (char)input_bit.to_ulong();
     }
+    compressed_text_ = compressed_huff;
+    WriteCompressedTextToFile("huffmandecoded_test.bin");
+    std::cout << "\nCompressed Decoded Huffman Data:\n" << compressed_huff << std::endl;
 
-    std::cout << "\ncomp Huffman Data:\n" << compressed_huff << std::endl;
-    std::cout << "\ncomp size Huffman Data:\n" << compressed_huff.size() << std::endl;
+    //std::cout << "\ncomp Huffman Data:\n" << compressed_huff << std::endl;
+    //std::cout << "\ncomp size Huffman Data:\n" << compressed_huff.size() << std::endl;
 
     std::string uncompressed_huff = "";
 
@@ -206,7 +213,7 @@ void Lz77Comp::Compression() {
         std::bitset<8> input_bit(compressed_huff[i]);
         uncompressed_huff += input_bit.to_string();
     }
-    std::cout << "\nDecoompressed Huffman Data:\n" << uncompressed_huff << std::endl;
+    std::cout << "\nDecompressed Encoded Huffman Data:\n" << uncompressed_huff << std::endl;
     decodedString = decode_file(minHeap.top(), uncompressed_huff);
     std::cout << "\nDecoded Huffman Data:\n" << decodedString << std::endl;
     std::cout << "\nDecoded Huffman Data size" << decodedString.size() << std::endl;
@@ -214,9 +221,9 @@ void Lz77Comp::Compression() {
     std::bitset<16> input_bit("01010111111110111111111000101011100");
     std::cout << "\nDSeparator:" << (char)input_bit.to_ulong() << std::endl;
 
-    compressed_text_ = compressed_huff;
-    WriteCompressedTextToFile("huffmandecoded_test.bin");
+    compressed_text_ = decodedString;
     Decompressor();
+
     cout << "\nUncompressed deflate:\n" << uncompressed_text_ << endl;
 
 }
@@ -256,6 +263,6 @@ void Lz77Comp::Decompressor() {
     }
 
     uncompressed_text_ = uncompressed;
-    std::cout << uncompressed << std::endl;
+    //std::cout << uncompressed << std::endl;
 
 }

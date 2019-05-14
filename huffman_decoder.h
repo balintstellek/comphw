@@ -15,19 +15,19 @@
 using namespace std;
 
 // to map each character its huffman value
-map<char, string> codes;
+map<std::string, string> codes;
 
 // to store the frequency of character of the input data
-map<char, int> freq;
+map<std::string, int> freq;
 
 // A Huffman tree node
 struct MinHeapNode
 {
-    char data;			 // One of the input characters
+    std::string data;			 // One of the input characters
     int freq;			 // Frequency of the character
     MinHeapNode *left, *right; // Left and right child
 
-    MinHeapNode(char data, int freq)
+    MinHeapNode(std::string data, int freq)
     {
         left = right = NULL;
         this->data = data;
@@ -52,7 +52,7 @@ void printCodes(struct MinHeapNode* root, string str)
 {
     if (!root)
         return;
-    if (root->data != leef_sign)
+    if (root->data != "NO")
         cout << root->data << ": " << str << "\n";
     printCodes(root->left, str + "0");
     printCodes(root->right, str + "1");
@@ -65,7 +65,7 @@ void storeCodes(struct MinHeapNode* root, string str)
 {
     if (root==NULL)
         return;
-    if (root->data != leef_sign)
+    if (root->data != "NO")
         codes[root->data]=str;
     storeCodes(root->left, str + "0");
     storeCodes(root->right, str + "1");
@@ -80,7 +80,7 @@ priority_queue<MinHeapNode*, vector<MinHeapNode*>, compare> minHeap;
 void HuffmanCodes(int size)
 {
     struct MinHeapNode *left, *right, *top;
-    for (map<char, int>::iterator v=freq.begin(); v!=freq.end(); v++)
+    for (map<std::string, int>::iterator v=freq.begin(); v!=freq.end(); v++)
         minHeap.push(new MinHeapNode(v->first, v->second));
     while (minHeap.size() != 1)
     {
@@ -88,7 +88,7 @@ void HuffmanCodes(int size)
         minHeap.pop();
         right = minHeap.top();
         minHeap.pop();
-        top = new MinHeapNode(leef_sign, left->freq + right->freq);
+        top = new MinHeapNode("NO", left->freq + right->freq);
         top->left = left;
         top->right = right;
         minHeap.push(top);
@@ -100,8 +100,12 @@ void HuffmanCodes(int size)
 // frequency in input string
 void calcFreq(string str, int n)
 {
-    for (int i=0; i<str.size(); i++)
-        freq[str[i]]++;
+    string sxx = "";
+    for (int i=0; i<str.size(); i++) {
+        sxx.push_back(str[i]);
+        freq[sxx]++;
+        sxx = "";
+    }
 }
 
 // function iterates through the encoded string s
