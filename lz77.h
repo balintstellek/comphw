@@ -34,6 +34,8 @@ public:
 
 Lz77Comp::Lz77Comp(){
     text_="";
+    compressed_text_ = "";
+    uncompressed_text_ = "";
 };
 
 Lz77Comp::Lz77Comp(std::string input_file_name) {
@@ -122,25 +124,10 @@ void Lz77Comp::Compression() {
         if(match.second == 0)
         {
             compressed += (char)0;
-            //proba
             std::bitset<8> input_bit_c((char)0);
             bin += input_bit_c.to_string();
 
-            //uj
-            //if (code_table.find(full_text[i]) != code_table.end()) {
-            //    //coda_table[full_text[i]];
-            //    std::bitset<16> input_bit(code_table[full_text[i]]);
-            //    compressed += (char)input_bit.to_ulong();;
-            //}
-            //
-            //TODO: Check what happens if change the full texto to binary
             compressed += full_text[i];
-
-            // Proba
-            std::bitset<8> input_bit(full_text[i]);
-            bin += input_bit.to_string();
-            //std::cout << bin << std::endl;
-            //
 
             i++;
         }
@@ -154,19 +141,13 @@ void Lz77Comp::Compression() {
             std::bitset<8> input_bit02(concat.to_string().substr(8,8));
 
             compressed += (char)input_bit01.to_ulong();
-            bin +=input_bit01.to_string();
             compressed += (char)input_bit02.to_ulong();
-            bin +=input_bit02.to_string();
-
-            //std::cout << length;
 
             i += match.second;
         }
     }
 
     compressed_text_ = compressed;
-
-    //std::cout << "Lz bin ; " << std::endl << bin << std::endl;
 
 }
 
