@@ -14,7 +14,19 @@ int main(int argc, char* argv[]) {
 
     if(argc == 6) file_name_03 = argv[5];
 
-    if(algorithm == "-lz" && direction == "-c")  {
+    if(algorithm == "-huff" && direction == "-c"){
+        HuffmanComp* huffcomp = new HuffmanComp(file_name_01);
+        huffcomp->Compression();
+        huffcomp->WriteCompressedTextToFile(file_name_02);
+    }
+    else if(algorithm == "-huff" && direction == "-d"){
+        HuffmanComp* huffcomp = new HuffmanComp(file_name_03);
+        huffcomp->Compression();
+        huffcomp->ReadCompressedFile(file_name_01);
+        huffcomp->Decompressor();
+        huffcomp->WriteUncompressedTextToFile(file_name_02);
+    }
+    else if(algorithm == "-lz" && direction == "-c")  {
         Lz77Comp* lz77 = new Lz77Comp(file_name_01);
         lz77->Compression();
         lz77->WriteCompressedTextToFile(file_name_02);

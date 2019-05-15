@@ -9,7 +9,7 @@
 #include <iostream>
 #include <vector>
 #include "misc.h"
-#include "huffman.h"
+#include "huffman_comp.h"
 #endif //DEFLATE_LZ77_H
 
 class Deflate {
@@ -181,7 +181,7 @@ void Deflate::Compression() {
         sxx = "";
     }
 
-    decodedString = decode_file(minHeap.top(), encodedString);
+    //decodedString = decode_file(minHeap.top(), encodedString);
     std::string compressed_huff = "";
     for(int i = 0; i < encodedString.size(); i= i +8) {
         std::bitset<8> input_bit(encodedString.substr(i, 8));

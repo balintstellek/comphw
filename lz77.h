@@ -28,8 +28,8 @@ public:
     void WriteCompressedTextToFile(std::string output_filename);
     void WriteUncompressedTextToFile();
     void WriteUncompressedTextToFile(std::string uncompressed_filename);
-    void Compression();
-    void Decompressor();
+    virtual void Compression();
+    virtual void Decompressor();
 };
 
 Lz77Comp::Lz77Comp(){
